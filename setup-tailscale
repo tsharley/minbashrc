@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+###############################################################################%
+
+case $(uname | tr '[:upper:]' '[:lower:]') in
+  linux*)
+    _OS=linux
+    ;;
+  darwin*)
+    _OS=macos
+    ;;
+  msys*)
+    _OS=windows
+    ;;
+  *)
+    _OS=notset
+    ;;
+esac
+
+if test ${_OS} == 'Linux'; then
+	# Add Tailscale’s package signing key and repository
+	curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/lunar.noarmor.gpg | \
+	tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
+	curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/lunar.tailscale-keyring.list | \
+	tee /etc/apt/sources.list.d/tailscale.list
+	# Update and install
+	apt-get update
+	apt-get install -y tailscale
+else
+	echo "OS not configured for this installation.  Aborting."
+fi
