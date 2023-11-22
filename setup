@@ -14,4 +14,4 @@ ln -s "${DOTDIR}/bashrc" "${HOME}/.bashrc"
 
 touch "${HOME}/.hushlogin"
 
-echo "Minimal install complete.  Source ".bashrc" when ready."
+echo "Minimal install complete.  Source .bashrc when ready."

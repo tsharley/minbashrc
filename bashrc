@@ -24,20 +24,34 @@ if ! shopt -oq posix; then
   fi
 fi
 
+case $(uname | tr '[:upper:]' '[:lower:]') in
+  linux*)
+    _OS=linux
+    ;;
+  darwin*)
+    _OS=macos
+    ;;
+  msys*)
+    _OS=windows
+    ;;
+  *)
+    _OS=notset
+    ;;
+esac
 
 ##### Aliases #####
 
 # ls, file-ops and movement
 if [[ "$(command -v eza)" != '' ]]; then
     EZA_OPTIONS=(
-    	-F
-    	--group-directories-first
-    	-I='Library|Downloads|Desktop|Movies|Music|Pictures|.DS_Store|__pycache__|.pytest_cache'
-    	--no-time
-		-s=name
-		--color=always
-		--icons=never
-	)
+        -F
+        --group-directories-first
+        -I='Library|Downloads|Desktop|Movies|Music|Pictures|.DS_Store|__pycache__|.pytest_cache'
+        --no-time
+                -s=name
+                --color=always
+                --icons=never
+        )
     alias l='eza -TF -L=2 ${EZA_OPTIONS[@]}'
     alias ll='eza -aFlTh -L=2 ${EZA_OPTIONS[@]}'
     alias lll='eza -aFlTh -L=4 ${EZA_OPTIONS[@]}'
@@ -47,30 +61,30 @@ if [[ "$(command -v eza)" != '' ]]; then
         eza -F "${EZA_OPTIONS[@]}"
         echo
     }
-elif [[ "$(command -v eza)" != '' ]]; then
-	EXA_OPTIONS=(
-		--classify
-		--color=always
-		--color-scale
-		--no-icons
-		--sort=name
-		--group-directories-first
-	)
-	alias l='exa ${EXA_OPTIONS[@]}'
-	alias l='exa --tree --level=2 ${EXA_OPTIONS[@]}'
-	alias l='exa --tree --level=3 --long ${EXA_OPTIONS[@]}'
-	cdls() {
-		cd "$@" || return;
-		clear
-        exa "${EXA_OPTIONS[@]}"
-		echo
-	}
-else
-    alias l='ls --color=always'
-    alias la='ls -a --color=always'
-    alias ll="ls -lhAF --color=always"
+elif [[ "$(command -v exa)" != '' ]]; then
+    EXA_OPTIONS=(
+        --classify
+        --color=always
+        --color-scale
+        --no-icons
+        --sort=name
+        --group-directories-first
+    )
+    alias l='exa ${EXA_OPTIONS[@]}'
+    alias ll='exa -a --tree --level=2 ${EXA_OPTIONS[@]}'
+    alias lll='exa -a --tree --level=3 --long ${EXA_OPTIONS[@]}'
     cdls() {
-      cd "$@" && ls -F --color=always
+        cd "$@" || return;
+        clear
+        exa "${EXA_OPTIONS[@]}"
+        echo
+    }
+else
+    alias l='ls -hF --color=always'
+    alias la='ls -ahF --color=always'
+    alias ll='ls -lhAF --color=always'
+    cdls() {
+      cd "$@" && ls -hF --color=always
     }
 fi
 alias cd=cdls
@@ -84,8 +98,8 @@ alias ga="git add ."
 # network and comms
 alias ping='c; ping -c 5 '
 alias p8="c; ping -c 5 8.8.8.8"
-alias pubkey="pbcopy < ~/.ssh/id_rsa.pub && echo \"Public key copied to pasteboard.\""
-alias fssh='fast-ssh'
+#alias pubkey="pbcopy < ~/.ssh/id_rsa.pub && echo \"Public key copied to pasteboard.\""
+#alias fssh='fast-ssh'
 
 # docker
 alias dils='docker image ls'
@@ -121,7 +135,7 @@ function _build_path() {
                           "${PKG_MANAGER_PREFIX}/bin"
                               "$HOME/.gem/ruby/2.6.0"
                                 "$HOME/.local/go/bin"
-	                               "$HOME/.cargo/bin"
+                                       "$HOME/.cargo/bin"
                                    "$HOME/.local/bin"
                                     "/usr/local/sbin"
                                      "/usr/local/bin"
@@ -167,4 +181,4 @@ fi
 
 
 ##### Theme #####
-PS1=$'\n\\[\\e[91m\\]\uE0B6\\[\\e[97;101m\\] \uE711  \\[\\e[0;48;5;238m\\] \\u@\\h \\[\\e[37;47m\\]\\[\\e[38;5;236m\\] \\w \\[\\e[0;37m\\]\uE0B0\\[\\e[0m\\] '
+PS1=$'\n\\[\\e[91m\\]\\[\\e[97;101m\\] @ \\[\\e[0;48;5;238m\\] \\u@\\h \\[\\e[37;47m\\]\\[\\e[38;5;236m\\] \\w \\[\\e[0;37m\\] \\$ \\[\\e[0m\\] '
