@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+###############################################################################%
+
+INSTALL_DIR="$(dirname "${0}")"
+DOTDIR="${HOME}/.dotfiles"
+
+[[ ! -d "${DOTDIR}" ]] && mkdir -p "${DOTDIR}" || exit
+
+[[ -e "${DOTDIR}/bashrc" ]] && \
+mv "${DOTDIR}/bashrc" "${DOTDIR}/bashrc.bak"  || exit
+
+cp "${INSTALL_DIR}/bashrc" "${DOTDIR}"
+ln -s "${DOTDIR}/bashrc" "${HOME}/.bashrc"
+
+touch "${HOME}/.hushlogin"
+
+echo "Minimal install complete.  Source ".bashrc" when ready."
