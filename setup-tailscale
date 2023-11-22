@@ -16,7 +16,7 @@ case $(uname | tr '[:upper:]' '[:lower:]') in
     ;;
 esac
 
-if test ${_OS} == 'Linux'; then
+if test ${_OS} == 'linux'; then
 	# Add Tailscale’s package signing key and repository
 	curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/lunar.noarmor.gpg | \
 	tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
