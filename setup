@@ -4,14 +4,46 @@
 INSTALL_DIR="$(dirname "${0}")"
 DOTDIR="${HOME}/.dotfiles"
 
-[[ ! -d "${DOTDIR}" ]] && mkdir -p "${DOTDIR}" || exit
+if [[ ! -d "${DOTDIR}" ]]; then
+        mkdir -p "${DOTDIR}"
+        echo "Creating .dotfiles directory"
+fi
 
-[[ -e "${DOTDIR}/bashrc" ]] && \
-mv "${DOTDIR}/bashrc" "${DOTDIR}/bashrc.bak"  || exit
+if [[ -e "${DOTDIR}/bashrc" ]]; then
+        echo "Created backup of existing bashrc"
+        mv "${DOTDIR}/bashrc" "${DOTDIR}/bashrc.bak"
+fi
 
+if [[ -e "${HOME}/.bashrc" ]]; then
+        mv "${HOME}/.bashrc" "${HOME}/.bashrc.bak"
+fi
+
+echo "Pushing bashrc from repo to .dotfiles"
 cp "${INSTALL_DIR}/bashrc" "${DOTDIR}"
+
+echo "Linking new bashrc"
 ln -s "${DOTDIR}/bashrc" "${HOME}/.bashrc"
 
+echo "Adding .hushlogin"
 touch "${HOME}/.hushlogin"
+
+apt_uu() {
+    apt-get update
+    apt-get upgrade -y
+}
+
+apt_install_from_file() {
+    cat "${1}" | while read -r line; do
+        echo; echo "Installing: $line"; echo
+        apt-get install -y "${line}"
+        echo; echo "$line installation complete"; echo
+    done
+}
+
+# Install packages
+echo "Installing common packages from list"
+apt_uu
+cp "${INSTALL_DIR}/pkgs.lst" "${DOTDIR}"
+apt_install_from_file "${DOTDIR}/pkgs.lst"
 
 echo "Minimal install complete.  Source .bashrc when ready."
